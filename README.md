@@ -1,73 +1,169 @@
-# Welcome to your Lovable project
+# 🍸 Motorbar Nightlife Web
 
-## Project info
+**Desenvolvido por:** Crystian Ediez Galdino
 
-**URL**: https://lovable.dev/projects/f385c7dc-c3b0-4321-a53a-810457cbca46
+Um projeto web moderno e responsivo para estabelecimentos noturnos, construído com as melhores tecnologias web atuais.
 
-## How can I edit this code?
+## 🚀 Tecnologias Utilizadas
 
-There are several ways of editing your application.
+- **Vite** - Build tool rápido e moderno
+- **TypeScript** - Linguagem tipada para JavaScript
+- **React** - Biblioteca para interfaces de usuário
+- **shadcn/ui** - Componentes de UI modernos e acessíveis
+- **Tailwind CSS** - Framework CSS utilitário
+- **PostCSS** - Processador CSS avançado
 
-**Use Lovable**
+## 📋 Pré-requisitos
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/f385c7dc-c3b0-4321-a53a-810457cbca46) and start prompting.
+Antes de começar, certifique-se de ter instalado:
 
-Changes made via Lovable will be committed automatically to this repo.
+- **Node.js** (versão 16 ou superior)
+- **npm** (gerenciador de pacotes do Node.js)
+- **Git** (para controle de versão)
 
-**Use your preferred IDE**
+### Como instalar:
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+1. **Node.js**: Baixe em [nodejs.org](https://nodejs.org/)
+2. **npm**: Vem junto com o Node.js
+3. **Git**: Baixe em [git-scm.com](https://git-scm.com/)
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+## 🛠️ Instalação e Configuração
 
-Follow these steps:
+### 1. Clone o repositório
+```bash
+git clone https://github.com/CrystianEdiezGaldino/rigon_motor_bar.git
+cd rigon_motor_bar
+```
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+### 2. Instale as dependências
+```bash
+npm install
+```
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+### 3. Inicie o servidor de desenvolvimento
+```bash
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+O projeto estará disponível em `http://localhost:5173`
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## 📁 Estrutura do Projeto
 
-**Use GitHub Codespaces**
+```
+motorbar-nightlife-web/
+├── public/                 # Arquivos estáticos
+│   ├── assets/            # Imagens, vídeos e favicons
+│   ├── robots.txt         # Configuração para SEO
+│   └── sitemap.xml        # Mapa do site
+├── src/                   # Código fonte
+│   ├── components/        # Componentes React
+│   │   ├── ui/           # Componentes de UI reutilizáveis
+│   │   ├── HeroSection.tsx
+│   │   ├── Navbar.tsx
+│   │   ├── Footer.tsx
+│   │   └── ...           # Outros componentes
+│   ├── hooks/            # Hooks customizados
+│   ├── lib/              # Utilitários e configurações
+│   ├── pages/            # Páginas da aplicação
+│   ├── App.tsx           # Componente principal
+│   └── main.tsx          # Ponto de entrada
+├── package.json           # Dependências e scripts
+├── tailwind.config.ts     # Configuração do Tailwind CSS
+├── vite.config.ts         # Configuração do Vite
+└── tsconfig.json          # Configuração do TypeScript
+```
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## 🎯 Funcionalidades Principais
 
-## What technologies are used for this project?
+- **Design Responsivo** - Funciona perfeitamente em todos os dispositivos
+- **Componentes Modulares** - Arquitetura limpa e reutilizável
+- **SEO Otimizado** - Meta tags, sitemap e robots.txt configurados
+- **Performance** - Carregamento rápido e otimizado
+- **Acessibilidade** - Componentes seguindo padrões WCAG
+- **UI Moderna** - Interface elegante com shadcn/ui
 
-This project is built with:
+## 📜 Scripts Disponíveis
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+```bash
+# Desenvolvimento
+npm run dev          # Inicia servidor de desenvolvimento
+npm run build        # Cria build de produção
+npm run preview      # Visualiza build de produção
+npm run lint         # Executa verificação de código
 
-## How can I deploy this project?
+# Dependências
+npm install          # Instala dependências
+npm update           # Atualiza dependências
+```
 
-Simply open [Lovable](https://lovable.dev/projects/f385c7dc-c3b0-4321-a53a-810457cbca46) and click on Share -> Publish.
+## 🚀 Deploy
 
-## Can I connect a custom domain to my Lovable project?
+### Build de Produção
+```bash
+npm run build
+```
 
-Yes it is!
+Os arquivos otimizados serão gerados na pasta `dist/`
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+### Deploy em Servidor Web
+1. Execute `npm run build`
+2. Faça upload da pasta `dist/` para seu servidor web
+3. Configure o servidor para servir arquivos estáticos
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+## 🔧 Configurações
+
+### Tailwind CSS
+- Configurado em `tailwind.config.ts`
+- Sistema de cores personalizado
+- Componentes responsivos
+
+### TypeScript
+- Configuração estrita para melhor qualidade de código
+- Tipos definidos para todos os componentes
+- Interfaces bem estruturadas
+
+### Vite
+- Build rápido e otimizado
+- Hot Module Replacement (HMR)
+- Configuração para produção
+
+## 📱 Responsividade
+
+O projeto é totalmente responsivo e funciona em:
+- 📱 Dispositivos móveis
+- 💻 Tablets
+- 🖥️ Desktops
+- 📺 Telas grandes
+
+## 🎨 Personalização
+
+### Cores e Temas
+- Edite `tailwind.config.ts` para personalizar cores
+- Modifique variáveis CSS em `src/index.css`
+
+### Componentes
+- Todos os componentes estão em `src/components/`
+- Fácil personalização e reutilização
+- Sistema de props bem definido
+
+## 🤝 Contribuição
+
+1. Faça um fork do projeto
+2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
+3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
+4. Push para a branch (`git push origin feature/AmazingFeature`)
+5. Abra um Pull Request
+
+## 📄 Licença
+
+Este projeto está sob a licença MIT. Veja o arquivo `LICENSE` para mais detalhes.
+
+## 👨‍💻 Desenvolvedor
+
+**Crystian Ediez Galdino**
+- GitHub: [@CrystianEdiezGaldino](https://github.com/CrystianEdiezGaldino)
+- Projeto: [Rigon Motor Bar](https://github.com/CrystianEdiezGaldino/rigon_motor_bar)
+
+---
+
+⭐ Se este projeto foi útil para você, considere dar uma estrela no repositório!
