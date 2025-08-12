@@ -1,0 +1,27 @@
+# Configurações do servidor Apache para a API
+RewriteEngine On
+
+# Permitir CORS para desenvolvimento
+Header always set Access-Control-Allow-Origin "*"
+Header always set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+Header always set Access-Control-Allow-Headers "Content-Type, Authorization, X-Requested-With"
+
+# Configurações de segurança
+Header always set X-Content-Type-Options nosniff
+Header always set X-Frame-Options DENY
+Header always set X-XSS-Protection "1; mode=block"
+
+# Configurações de sessão
+php_value session.cookie_httponly 1
+php_value session.cookie_secure 0
+php_value session.use_strict_mode 1
+
+# Configurações de upload (se necessário)
+php_value upload_max_filesize 10M
+php_value post_max_size 10M
+php_value max_execution_time 300
+php_value memory_limit 256M
+
+# Redirecionar erros para endpoints da API
+ErrorDocument 404 /api/endpoints/error.php
+ErrorDocument 500 /api/endpoints/error.php
