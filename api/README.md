@@ -1,205 +1,178 @@
-# 🍸 Sistema CRUD - Rigon Motor Bar
+# 🍺 API Rigon Motor Bar - Versão Simplificada
 
-Sistema completo de gerenciamento de cardápio com autenticação e banco de dados MySQL.
+API simples em PHP puro para gerenciamento de produtos do cardápio.
 
-## 🚀 Funcionalidades
+## 🚀 Características
 
-- **Sistema de Login** com autenticação segura
-- **CRUD Completo** para produtos do cardápio
-- **Painel Administrativo** responsivo e intuitivo
-- **API REST** com endpoints seguros
-- **Banco de Dados MySQL** com estrutura otimizada
+- **PHP Puro**: Sem frameworks, simples e direto
+- **CRUD Completo**: Create, Read, Update, Delete de produtos
+- **Autenticação**: Sistema de login para administradores
+- **JSON**: Todas as respostas em formato JSON
+- **CORS**: Configurado para permitir requisições cross-origin
 
-## 📋 Pré-requisitos
+## 📋 Endpoints da API
 
-### Software Necessário
-- **XAMPP** ou **WAMP** (Apache + MySQL + PHP)
-- **PHP 7.4+** com extensões PDO e MySQL
-- **MySQL 5.7+** ou **MariaDB 10.2+**
-- **Node.js 16+** e **npm**
+### Autenticação
 
-### Configurações do Banco
-- **Host**: localhost
-- **Database**: rigon
-- **Username**: root
-- **Password**: The-dark3
-
-## 🗄️ Estrutura do Banco de Dados
-
-### Tabela: usuarios
-```sql
-- id (INT, AUTO_INCREMENT, PRIMARY KEY)
-- username (VARCHAR(50), UNIQUE)
-- password (VARCHAR(255)) - Hash bcrypt
-- nome (VARCHAR(100))
-- email (VARCHAR(100), UNIQUE)
-- role (ENUM: 'admin', 'user')
-- ativo (TINYINT(1))
-- created_at (TIMESTAMP)
-- last_login (TIMESTAMP)
-- updated_at (TIMESTAMP)
+#### POST `/index.php?path=login`
+**Login de usuário**
+```json
+{
+  "username": "admin",
+  "password": "admin123"
+}
 ```
 
-### Tabela: produtos
-```sql
-- id (INT, AUTO_INCREMENT, PRIMARY KEY)
-- nome (VARCHAR(100))
-- descricao (TEXT)
-- preco (DECIMAL(10,2))
-- categoria (VARCHAR(50))
-- imagem (VARCHAR(255))
-- ativo (TINYINT(1))
-- created_at (TIMESTAMP)
-- updated_at (TIMESTAMP)
-```
+#### POST `/index.php?path=logout`
+**Logout do usuário**
 
-## ⚙️ Instalação
-
-### 1. Configurar Banco de Dados
-```bash
-# Acesse o phpMyAdmin ou MySQL CLI
-# Execute o script: api/database/schema.sql
-```
-
-### 2. Configurar Servidor Web
-```bash
-# Copie a pasta 'api' para o diretório do seu servidor web
-# Exemplo: C:\xampp\htdocs\rigon\api\
-```
-
-### 3. Configurar Frontend
-```bash
-# No diretório raiz do projeto
-npm install
-npm run dev
-```
-
-## 🔐 Sistema de Autenticação
-
-### Usuário Padrão
-- **Username**: admin
-- **Password**: admin123
-- **Role**: admin
-
-### Endpoints de Autenticação
-- `POST /api/endpoints/auth.php` - Login/Logout/Registro
-- `GET /api/endpoints/auth.php` - Verificar status da sessão
-
-### Ações Disponíveis
-- `action: 'login'` - Fazer login
-- `action: 'logout'` - Fazer logout
-- `action: 'register'` - Registrar novo usuário (apenas admin)
-
-## 📡 API Endpoints
+#### GET `/index.php?path=auth/check`
+**Verificar status de autenticação**
 
 ### Produtos
-- `GET /api/endpoints/produtos.php` - Listar todos os produtos
-- `GET /api/endpoints/produtos.php?id=X` - Buscar produto específico
-- `GET /api/endpoints/produtos.php?categoria=X` - Buscar por categoria
-- `POST /api/endpoints/produtos.php` - Criar novo produto
-- `PUT /api/endpoints/produtos.php` - Atualizar produto
-- `DELETE /api/endpoints/produtos.php` - Deletar produto (soft delete)
 
-### Segurança
-- Todos os endpoints de produtos requerem autenticação
-- Validação de sessão em todas as operações
-- Sanitização de dados de entrada
-- Prepared statements para prevenir SQL injection
+#### GET `/index.php?path=produtos`
+**Listar todos os produtos**
+- Parâmetros opcionais:
+  - `categoria`: Filtrar por categoria
+  - `ativo`: 1 para ativos, 0 para inativos
 
-## 🎯 Como Usar
+#### GET `/index.php?path=produtos/categorias`
+**Listar todas as categorias disponíveis**
 
-### 1. Acessar o Painel Admin
-```
-http://localhost/rigon/admin
-```
+#### GET `/index.php?path=produtos/id&id={id}`
+**Buscar produto por ID**
 
-### 2. Fazer Login
-- Usuário: admin
-- Senha: admin123
-
-### 3. Gerenciar Produtos
-- **Criar**: Clique em "Novo Produto"
-- **Editar**: Clique em "Editar" na linha do produto
-- **Deletar**: Clique em "Deletar" na linha do produto
-
-### 4. Visualizar Cardápio
-```
-http://localhost:5173/menu
+#### POST `/index.php?path=produtos`
+**Criar novo produto**
+```json
+{
+  "nome": "Nome do Produto",
+  "descricao": "Descrição do produto",
+  "preco": 15.50,
+  "categoria": "Drinks"
+}
 ```
 
-## 🔧 Configurações
-
-### Arquivo de Configuração
-```php
-// api/config/database.php
-private $host = "localhost";
-private $db_name = "rigon";
-private $username = "root";
-private $password = "The-dark3";
+#### PUT `/index.php?path=produtos`
+**Atualizar produto existente**
+```json
+{
+  "id": 1,
+  "nome": "Nome Atualizado",
+  "descricao": "Descrição atualizada",
+  "preco": 16.00,
+  "categoria": "Drinks"
+}
 ```
 
-### Categorias Disponíveis
-- Drinks
-- Cervejas
-- Destilados
-- Vinhos
-- Refrigerantes
-- Petiscos
-- Pratos
-- Sobremesas
-- Outros
+#### DELETE `/index.php?path=produtos?id={id}`
+**Remover produto (soft delete)**
 
-## 🚨 Troubleshooting
+## 🗄️ Estrutura do Banco
 
-### Erro de Conexão com Banco
-- Verifique se o MySQL está rodando
-- Confirme as credenciais em `database.php`
-- Teste a conexão via phpMyAdmin
+### Tabela `usuarios`
+- `id`: ID único
+- `username`: Nome de usuário
+- `password`: Senha criptografada
+- `nome`: Nome completo
+- `email`: Email do usuário
+- `role`: Papel (admin/user)
+- `ativo`: Status ativo/inativo
+- `created_at`: Data de criação
+- `last_login`: Último login
+- `updated_at`: Data de atualização
 
-### Erro de Permissões
-- Verifique se o Apache tem acesso à pasta `api`
-- Confirme as permissões de escrita para uploads
+### Tabela `produtos`
+- `id`: ID único
+- `nome`: Nome do produto
+- `descricao`: Descrição detalhada
+- `preco`: Preço em reais
+- `categoria`: Categoria do produto
+- `imagem`: Nome do arquivo de imagem
+- `ativo`: Status ativo/inativo
+- `created_at`: Data de criação
+- `updated_at`: Data de atualização
 
-### Erro de Sessão
-- Verifique se o PHP tem suporte a sessões
-- Confirme se o diretório de sessões é gravável
+## 🔧 Configuração
 
-## 📱 Responsividade
+1. **Banco de dados**: Configure as credenciais em `config.php`
+2. **Tabelas**: Execute o script `database/schema.sql`
+3. **Usuário admin**: Usuário padrão `admin` com senha `admin123`
 
-O painel administrativo é totalmente responsivo e funciona em:
-- 📱 Dispositivos móveis
-- 💻 Tablets
-- 🖥️ Desktops
+## 📱 Teste da API
+
+Use o arquivo `test-api.html` para testar todas as funcionalidades da API:
+
+1. Abra `test-api.html` no navegador
+2. Faça login com usuário `admin` e senha `admin123`
+3. Teste as operações CRUD nos produtos
+
+## 🌐 Produção
+
+Para usar em produção no domínio `https://rigonmotorbar.com.br/`:
+
+1. **Upload dos arquivos**:
+   - `index.php` → `/public_html/api/`
+   - `config.php` → `/public_html/api/`
+   - `test-api.html` → `/public_html/api/`
+
+2. **Configuração do banco**:
+   - Atualize `config.php` com credenciais de produção
+   - Execute o script SQL para criar as tabelas
+
+3. **Segurança**:
+   - Altere a senha padrão do admin
+   - Configure HTTPS
+   - Considere adicionar rate limiting
+
+## 📝 Exemplos de Uso
+
+### JavaScript/Fetch
+```javascript
+// Login
+const response = await fetch('index.php?path=login', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    username: 'admin',
+    password: 'admin123'
+  })
+});
+
+// Listar produtos
+const produtos = await fetch('index.php?path=produtos');
+```
+
+### cURL
+```bash
+# Login
+curl -X POST "index.php?path=login" \
+  -H "Content-Type: application/json" \
+  -d '{"username":"admin","password":"admin123"}'
+
+# Listar produtos
+curl "index.php?path=produtos"
+```
+
+## 🚨 Notas Importantes
+
+- **Soft Delete**: Produtos removidos são marcados como inativos, não excluídos
+- **Sessões**: Usar sessões PHP para autenticação
+- **Validação**: Validação básica de entrada implementada
+- **CORS**: Configurado para permitir requisições de qualquer origem
 
 ## 🔒 Segurança
 
-- **Hash de senhas** com bcrypt
-- **Validação de sessão** em todas as operações
-- **Sanitização de dados** de entrada
-- **Prepared statements** para prevenir SQL injection
-- **Controle de acesso** baseado em roles
+- Senhas criptografadas com `password_hash()`
+- Validação de entrada para prevenir SQL injection
+- Verificação de permissões para operações administrativas
+- Sessões seguras para autenticação
 
-## 📈 Performance
+## 📞 Suporte
 
-- **Índices otimizados** no banco de dados
-- **Queries preparadas** para melhor performance
-- **Paginação** para grandes volumes de dados
-- **Cache de sessão** para usuários logados
-
-## 🤝 Contribuição
-
-1. Faça um fork do projeto
-2. Crie uma branch para sua feature
-3. Commit suas mudanças
-4. Push para a branch
-5. Abra um Pull Request
-
-## 📄 Licença
-
-Este projeto está sob a licença MIT.
-
----
-
-**Desenvolvido por:** Crystian Ediez Galdino  
-**Projeto:** Rigon Motor Bar  
-**Versão:** 1.0.0
+Para dúvidas ou problemas, verifique:
+1. Logs de erro do PHP
+2. Configuração do banco de dados
+3. Permissões de arquivo no servidor
+4. Configuração CORS se necessário

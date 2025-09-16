@@ -3,6 +3,14 @@ import { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 
+interface NavItem {
+  label: string;
+  id: string;
+  isRoute?: boolean;
+  isExternal?: boolean;
+  url?: string;
+}
+
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -57,15 +65,15 @@ const Navbar = () => {
     }
   };
 
-  const navItems = [
+  const navItems: NavItem[] = [
     { label: 'Home', id: 'home' },
     { label: 'Sobre', id: 'sobre' },
-    { label: 'Cardápio', id: 'cardapio', isRoute: true },
+    { label: 'Cardápio', id: 'cardapio', isExternal: true, url: 'https://rigonmotorbar.com.br/assets/imagens/cardapio.pdf' },
     { label: 'Eventos', id: 'eventos' },
     { label: 'Contato', id: 'contato' }
   ];
 
-  const isActive = (item: typeof navItems[0]) => {
+  const isActive = (item: NavItem) => {
     if (item.isRoute) {
       return location.pathname === `/${item.id}`;
     }
@@ -104,6 +112,17 @@ const Navbar = () => {
                   isActive(item) ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'
                 }`}></span>
               </Link>
+            ) : item.isExternal ? (
+              <a
+                key={item.label}
+                href={item.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-white uppercase text-sm font-medium relative group transition-all duration-300 hover:text-[#F45F0A]"
+              >
+                {item.label}
+                <span className="absolute left-0 right-0 bottom-0 h-0.5 bg-[#F45F0A] transform transition-transform duration-300 origin-center scale-x-0 group-hover:scale-x-100"></span>
+              </a>
             ) : (
               <button
                 key={item.label}
@@ -144,6 +163,17 @@ const Navbar = () => {
               >
                 {item.label}
               </Link>
+            ) : item.isExternal ? (
+              <a
+                key={item.label}
+                href={item.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block w-full text-left py-3 text-white hover:text-[#F45F0A] transition-colors"
+                onClick={() => setIsOpen(false)}
+              >
+                {item.label}
+              </a>
             ) : (
               <button
                 key={item.label}

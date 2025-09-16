@@ -1,10 +1,22 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
-import { Instagram, ExternalLink } from 'lucide-react';
+import { Instagram, ExternalLink, RefreshCw } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const InstagramFeed: React.FC = () => {
+  const [iframeLoaded, setIframeLoaded] = useState(false);
+  const [retryCount, setRetryCount] = useState(0);
+
+  const handleIframeLoad = () => {
+    setIframeLoaded(true);
+  };
+
+  const handleRetry = () => {
+    setRetryCount(prev => prev + 1);
+    setIframeLoaded(false);
+  };
+
   return (
     <section className="relative py-24 md:py-32 overflow-hidden" id="instagram">
       {/* Background Effects */}
@@ -54,22 +66,99 @@ const InstagramFeed: React.FC = () => {
           </motion.p>
         </div>
 
-        {/* Instagram Embed */}
+        {/* Instagram Feed Iframe */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
           viewport={{ once: true }}
-          className="w-full max-w-4xl mx-auto mb-16"
+          className="w-full max-w-6xl mx-auto mb-16"
         >
-          <div className="relative pb-[93%] h-0">
-            <iframe
-              src="https://www.instagram.com/rigonmotorbar/embed/?theme=dark"
-              className="absolute top-0 left-0 w-full h-full rounded-xl border border-zinc-800/30"
-              frameBorder="0"
-              scrolling="no"
-              allowTransparency={true}
-            ></iframe>
+          {/* Loading State */}
+          {!iframeLoaded && (
+            <div className="flex flex-col items-center justify-center py-16">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#F45F0A] mb-4"></div>
+              <p className="text-gray-300 text-lg">Carregando feed do Instagram...</p>
+            </div>
+          )}
+
+          {/* Instagram Iframe Container */}
+          <div className="relative bg-zinc-900/50 backdrop-blur-sm rounded-xl overflow-hidden border border-zinc-800/50">
+            {/* Instagram Profile Iframe - Multiple Options */}
+            <div className="relative">
+              {/* Option 1: Instagram Profile Embed */}
+              <iframe
+                key={`profile-${retryCount}`}
+                src="https://www.instagram.com/rigonmotorbar/embed/"
+                width="100%"
+                height="900"
+                className="w-full h-[600px] md:h-[700px] lg:h-[800px] xl:h-[900px]"
+                style={{ 
+                  border: 'none',
+                  borderRadius: '12px',
+                  display: iframeLoaded ? 'block' : 'none',
+                  minHeight: '600px'
+                }}
+                onLoad={handleIframeLoad}
+                title="Instagram Feed - Rigon Motorbar"
+                allowTransparency={true}
+                scrolling="no"
+                sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
+              />
+              
+              {/* Option 2: Instagram Lightbox Embed (Fallback) */}
+              <iframe
+                key={`lightbox-${retryCount}`}
+                src="https://www.instagram.com/rigonmotorbar/"
+                width="100%"
+                height="900"
+                className="w-full h-[600px] md:h-[700px] lg:h-[800px] xl:h-[900px]"
+                style={{ 
+                  border: 'none',
+                  borderRadius: '12px',
+                  display: 'none', // Hidden by default, can be shown as fallback
+                  minHeight: '600px'
+                }}
+                title="Instagram Profile - Rigon Motorbar"
+                allowTransparency={true}
+                scrolling="no"
+                sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
+              />
+            </div>
+            
+            {/* Fallback Content */}
+            {!iframeLoaded && (
+              <div className="p-8 text-center">
+                <Instagram className="h-16 w-16 text-[#F45F0A] mx-auto mb-4" />
+                <h3 className="text-xl font-semibold text-white mb-2">Feed do Instagram</h3>
+                <p className="text-gray-400 mb-6">
+                  Acesse nosso perfil no Instagram para ver todas as novidades!
+                </p>
+                <Button 
+                  onClick={handleRetry}
+                  variant="outline"
+                  className="bg-zinc-800/50 border-zinc-700 hover:border-[#F45F0A]/50"
+                >
+                  <RefreshCw className="h-4 w-4 mr-2" />
+                  Tentar Novamente
+                </Button>
+              </div>
+            )}
+          </div>
+
+          {/* Alternative: Instagram Profile Link */}
+          <div className="mt-8 text-center">
+           
+            <a 
+              href="https://www.instagram.com/rigonmotorbar/" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="inline-flex items-center text-[#F45F0A] hover:text-white transition-colors duration-300"
+            >
+              <Instagram className="h-5 w-5 mr-2" />
+              @rigonmotorbar
+              <ExternalLink className="h-4 w-4 ml-2" />
+            </a>
           </div>
         </motion.div>
 

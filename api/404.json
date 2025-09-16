@@ -1,0 +1,14 @@
+{
+  "error": "Not Found",
+  "message": "O endpoint solicitado não foi encontrado",
+  "status": 404,
+  "timestamp": "2025-01-12T00:00:00Z",
+  "path": "/api",
+  "available_endpoints": [
+    "/api/endpoints/cardapio-publico.php",
+    "/api/endpoints/auth.php",
+    "/api/endpoints/produtos.php",
+    "/api/test.php",
+    "/api/test-database.php"
+  ]
+}

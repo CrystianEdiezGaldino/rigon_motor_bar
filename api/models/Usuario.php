@@ -29,39 +29,74 @@ class Usuario {
         
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         
-        if($row && password_verify($password, $row['password'])) {
-            $this->id = $row['id'];
-            $this->username = $row['username'];
-            $this->nome = $row['nome'];
-            $this->email = $row['email'];
-            $this->role = $row['role'];
-            $this->ativo = $row['ativo'];
+        // Debug detalhado
+        error_log("=== DEBUG LOGIN ===");
+        error_log("Username: $username");
+        error_log("Password recebida: $password");
+        error_log("Hash no banco: " . ($row ? $row['password'] : 'NÃO ENCONTRADO'));
+        error_log("Usuário encontrado: " . ($row ? 'SIM' : 'NÃO'));
+        
+        if($row) {
+            error_log("Verificando senha...");
+            $password_verify_result = password_verify($password, $row['password']);
+            error_log("password_verify resultado: " . ($password_verify_result ? 'TRUE' : 'FALSE'));
             
-            // Atualizar último login
-            $this->updateLastLogin();
-            
-            return true;
+            if($password_verify_result) {
+                error_log("Senha válida! Configurando sessão...");
+                
+                $this->id = $row['id'];
+                $this->username = $row['username'];
+                $this->nome = $row['nome'];
+                $this->email = $row['email'];
+                $this->role = $row['role'];
+                $this->ativo = $row['ativo'];
+                
+                // Definir variáveis de sessão
+                $_SESSION['user_id'] = $row['id'];
+                $_SESSION['user_username'] = $row['username'];
+                $_SESSION['user_nome'] = $row['nome'];
+                $_SESSION['user_email'] = $row['email'];
+                $_SESSION['user_role'] = $row['role'];
+                $_SESSION['user_ativo'] = $row['ativo'];
+                
+                // Atualizar último login
+                $this->updateLastLogin();
+                
+                error_log("Login bem-sucedido para: $username");
+                return true;
+            } else {
+                error_log("Senha inválida para usuário: $username");
+            }
+        } else {
+            error_log("Usuário não encontrado: $username");
         }
         
+        error_log("=== FIM DEBUG LOGIN ===");
         return false;
     }
 
     // Atualizar último login
-    private function updateLastLogin() {
-        $query = "UPDATE " . $this->table_name . " SET last_login = NOW() WHERE id = ?";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(1, $this->id);
-        $stmt->execute();
+    public function updateLastLogin($userId = null) {
+        $userId = $userId ?: $_SESSION['user_id'];
+        if ($userId) {
+            $query = "UPDATE " . $this->table_name . " SET last_login = NOW() WHERE id = ?";
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(1, $userId);
+            $stmt->execute();
+        }
     }
 
     // Verificar se usuário está logado
     public function isLoggedIn() {
-        return isset($_SESSION['user_id']) && !empty($_SESSION['user_id']);
+        return isset($_SESSION['user_id']) && 
+               !empty($_SESSION['user_id']) && 
+               isset($_SESSION['user_role']) && 
+               $_SESSION['user_ativo'] == 1;
     }
 
     // Verificar se usuário é admin
     public function isAdmin() {
-        return isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin';
+        return $this->isLoggedIn() && $_SESSION['user_role'] === 'admin';
     }
 
     // Criar novo usuário
@@ -81,6 +116,14 @@ class Usuario {
         
         // Hash da senha
         $hashed_password = password_hash($this->password, PASSWORD_DEFAULT);
+        
+        // Debug do cadastro
+        error_log("=== DEBUG CADASTRO ===");
+        error_log("Username: " . $this->username);
+        error_log("Senha original: " . $this->password);
+        error_log("Hash gerado: " . $hashed_password);
+        error_log("Verificação do hash: " . (password_verify($this->password, $hashed_password) ? 'OK' : 'FALHOU'));
+        error_log("=== FIM DEBUG CADASTRO ===");
         
         $stmt->bindParam(":username", $this->username);
         $stmt->bindParam(":password", $hashed_password);
@@ -120,6 +163,17 @@ class Usuario {
         }
         
         return false;
+    }
+    
+    // Verificar se username já existe
+    public function checkUsernameExists($username) {
+        $query = "SELECT id FROM " . $this->table_name . " WHERE username = ? LIMIT 0,1";
+        
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(1, $username);
+        $stmt->execute();
+        
+        return $stmt->fetch(PDO::FETCH_ASSOC) ? true : false;
     }
 }
 ?>

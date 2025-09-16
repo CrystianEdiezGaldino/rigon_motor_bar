@@ -37,11 +37,11 @@ const ContactSection: React.FC = () => {
               <div className="space-y-4">
                 <p className="flex items-center">
                   <Phone className="w-5 h-5 text-[#F45F0A] mr-3" />
-                  <span>(41) 99999-9999</span>
+                  <span>(41) 99678-1439</span>
                 </p>
                 <p className="flex items-center">
                   <Phone className="w-5 h-5 text-[#F45F0A] mr-3" />
-                  <span>(41) 99999-9999 (WhatsApp)</span>
+                  <span>(41) 99678-1439 (WhatsApp)</span>
                 </p>
                 <p className="flex items-center">
                   <Mail className="w-5 h-5 text-[#F45F0A] mr-3" />

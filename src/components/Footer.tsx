@@ -10,7 +10,7 @@ const Footer: React.FC = () => {
   
   const socialLinks = [
     { icon: <Instagram size={20} />, url: "https://www.instagram.com/rigonmotorbar/" },
-    { icon: <Facebook size={20} />, url: "#" },
+    { icon: <Facebook size={20} />, url: "https://www.facebook.com/rigonmotorbar/" },
   ];
   
   const footerLinks = [
@@ -23,7 +23,7 @@ const Footer: React.FC = () => {
   
   const contactInfo = [
     { icon: <MapPin size={16} />, text: "Rua São Pedro, 159 - Jd Menino Deus, Quatro Barras" },
-    { icon: <Phone size={16} />, text: "(41) 99999-9999" },
+    { icon: <Phone size={16} />, text: "(41) 99678-1439" },
     { icon: <Mail size={16} />, text: "contato@rigonmotorbar.com.br" },
   ];
   

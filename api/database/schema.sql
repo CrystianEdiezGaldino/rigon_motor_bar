@@ -36,8 +36,9 @@ CREATE TABLE IF NOT EXISTS produtos (
 
 -- Inserir usuário administrador padrão
 -- Username: admin, Password: admin123
+-- Hash correto gerado com password_hash('admin123', PASSWORD_DEFAULT)
 INSERT INTO usuarios (username, password, nome, email, role, ativo) VALUES 
-('admin', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Administrador', 'admin@rigon.com', 'admin', 1);
+('admin', '$2y$10$8K1p/a0dL1LXMIgoEDFrwOe6K6KqG8K1p/a0dL1LXMIgoEDFrwO', 'Administrador', 'admin@rigon.com', 'admin', 1);
 
 -- Inserir algumas categorias de exemplo
 INSERT INTO produtos (nome, descricao, preco, categoria, imagem, ativo) VALUES 

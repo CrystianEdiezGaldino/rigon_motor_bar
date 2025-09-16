@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste da API - Rigon Motor Bar</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .section { margin: 20px 0; padding: 20px; border: 1px solid #ddd; border-radius: 5px; }
+        button { padding: 10px 20px; margin: 5px; cursor: pointer; }
+        input, select, textarea { padding: 8px; margin: 5px; width: 200px; }
+        .result { background: #f5f5f5; padding: 10px; margin: 10px 0; border-radius: 3px; }
+        .error { color: red; }
+        .success { color: green; }
+    </style>
+</head>
+<body>
+    <h1>🍺 Teste da API - Rigon Motor Bar</h1>
+    
+    <!-- Login -->
+    <div class="section">
+        <h2>🔐 Login</h2>
+        <input type="text" id="username" placeholder="Usuário" value="admin">
+        <input type="password" id="password" placeholder="Senha" value="admin123">
+        <button onclick="login()">Entrar</button>
+        <button onclick="logout()">Sair</button>
+        <button onclick="checkAuth()">Verificar Status</button>
+        <div id="authResult" class="result"></div>
+    </div>
+    
+    <!-- Listar Produtos -->
+    <div class="section">
+        <h2>📋 Produtos</h2>
+        <select id="categoriaFilter">
+            <option value="">Todas as categorias</option>
+            <option value="Cervejas">Cervejas</option>
+            <option value="Destilados">Destilados</option>
+            <option value="Drinks">Drinks</option>
+            <option value="Petiscos">Petiscos</option>
+            <option value="Refrigerantes">Refrigerantes</option>
+            <option value="Outros">Outros</option>
+        </select>
+        <button onclick="listarProdutos()">Listar Produtos</button>
+        <button onclick="getCategorias()">Ver Categorias</button>
+        <div id="produtosResult" class="result"></div>
+    </div>
+    
+    <!-- Adicionar Produto -->
+    <div class="section">
+        <h2>➕ Adicionar Produto</h2>
+        <input type="text" id="nome" placeholder="Nome do produto">
+        <textarea id="descricao" placeholder="Descrição"></textarea>
+        <input type="number" id="preco" placeholder="Preço" step="0.01">
+        <select id="categoria">
+            <option value="">Selecione categoria</option>
+            <option value="Cervejas">Cervejas</option>
+            <option value="Destilados">Destilados</option>
+            <option value="Drinks">Drinks</option>
+            <option value="Petiscos">Petiscos</option>
+            <option value="Refrigerantes">Refrigerantes</option>
+            <option value="Outros">Outros</option>
+        </select>
+        <button onclick="adicionarProduto()">Adicionar</button>
+        <div id="addResult" class="result"></div>
+    </div>
+    
+    <!-- Editar/Remover Produto -->
+    <div class="section">
+        <h2>✏️ Editar/Remover Produto</h2>
+        <input type="number" id="editId" placeholder="ID do produto">
+        <button onclick="buscarProduto()">Buscar</button>
+        <button onclick="editarProduto()">Editar</button>
+        <button onclick="removerProduto()">Remover</button>
+        <div id="editResult" class="result"></div>
+    </div>
+
+    <script>
+        const API_BASE = 'index.php';
+        
+        // Função para fazer requisições
+        async function apiCall(endpoint, method = 'GET', data = null) {
+            try {
+                const url = `${API_BASE}?path=${endpoint}`;
+                const options = {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                };
+                
+                if (data) {
+                    options.body = JSON.stringify(data);
+                }
+                
+                const response = await fetch(url, options);
+                const result = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(result.error || 'Erro na requisição');
+                }
+                
+                return result;
+            } catch (error) {
+                throw error;
+            }
+        }
+        
+        // Login
+        async function login() {
+            try {
+                const username = document.getElementById('username').value;
+                const password = document.getElementById('password').value;
+                
+                const result = await apiCall('login', 'POST', { username, password });
+                showResult('authResult', result.message, 'success');
+                setTimeout(checkAuth, 1000);
+            } catch (error) {
+                showResult('authResult', error.message, 'error');
+            }
+        }
+        
+        // Logout
+        async function logout() {
+            try {
+                const result = await apiCall('logout', 'POST');
+                showResult('authResult', result.message, 'success');
+                document.getElementById('authResult').innerHTML = '';
+            } catch (error) {
+                showResult('authResult', error.message, 'error');
+            }
+        }
+        
+        // Verificar autenticação
+        async function checkAuth() {
+            try {
+                const result = await apiCall('auth/check');
+                if (result.logged_in) {
+                    showResult('authResult', `Logado como: ${result.user.username} (${result.user.role})`, 'success');
+                } else {
+                    showResult('authResult', 'Não logado', 'error');
+                }
+            } catch (error) {
+                showResult('authResult', error.message, 'error');
+            }
+        }
+        
+        // Listar produtos
+        async function listarProdutos() {
+            try {
+                const categoria = document.getElementById('categoriaFilter').value;
+                const endpoint = 'produtos' + (categoria ? `?categoria=${categoria}` : '');
+                const result = await apiCall(endpoint);
+                
+                let html = '<h3>Produtos:</h3>';
+                if (result.produtos && result.produtos.length > 0) {
+                    html += '<table border="1" style="width:100%; border-collapse: collapse;">';
+                    html += '<tr><th>ID</th><th>Nome</th><th>Descrição</th><th>Preço</th><th>Categoria</th></tr>';
+                    result.produtos.forEach(produto => {
+                        html += `<tr>
+                            <td>${produto.id}</td>
+                            <td>${produto.nome}</td>
+                            <td>${produto.descricao || '-'}</td>
+                            <td>R$ ${produto.preco}</td>
+                            <td>${produto.categoria}</td>
+                        </tr>`;
+                    });
+                    html += '</table>';
+                } else {
+                    html += '<p>Nenhum produto encontrado</p>';
+                }
+                
+                document.getElementById('produtosResult').innerHTML = html;
+            } catch (error) {
+                showResult('produtosResult', error.message, 'error');
+            }
+        }
+        
+        // Obter categorias
+        async function getCategorias() {
+            try {
+                const result = await apiCall('produtos/categorias');
+                let html = '<h3>Categorias disponíveis:</h3><ul>';
+                result.categorias.forEach(cat => {
+                    html += `<li>${cat}</li>`;
+                });
+                html += '</ul>';
+                document.getElementById('produtosResult').innerHTML = html;
+            } catch (error) {
+                showResult('produtosResult', error.message, 'error');
+            }
+        }
+        
+        // Adicionar produto
+        async function adicionarProduto() {
+            try {
+                const nome = document.getElementById('nome').value;
+                const descricao = document.getElementById('descricao').value;
+                const preco = document.getElementById('preco').value;
+                const categoria = document.getElementById('categoria').value;
+                
+                if (!nome || !preco || !categoria) {
+                    showResult('addResult', 'Nome, preço e categoria são obrigatórios', 'error');
+                    return;
+                }
+                
+                const result = await apiCall('produtos', 'POST', {
+                    nome, descricao, preco: parseFloat(preco), categoria
+                });
+                
+                showResult('addResult', result.message, 'success');
+                
+                // Limpar campos
+                document.getElementById('nome').value = '';
+                document.getElementById('descricao').value = '';
+                document.getElementById('preco').value = '';
+                document.getElementById('categoria').value = '';
+                
+                // Atualizar lista
+                setTimeout(listarProdutos, 1000);
+            } catch (error) {
+                showResult('addResult', error.message, 'error');
+            }
+        }
+        
+        // Buscar produto
+        async function buscarProduto() {
+            try {
+                const id = document.getElementById('editId').value;
+                if (!id) {
+                    showResult('editResult', 'Digite um ID válido', 'error');
+                    return;
+                }
+                
+                const result = await apiCall(`produtos/id&id=${id}`);
+                if (result.produto) {
+                    const p = result.produto;
+                    document.getElementById('nome').value = p.nome;
+                    document.getElementById('descricao').value = p.descricao || '';
+                    document.getElementById('preco').value = p.preco;
+                    document.getElementById('categoria').value = p.categoria;
+                    showResult('editResult', `Produto encontrado: ${p.nome}`, 'success');
+                }
+            } catch (error) {
+                showResult('editResult', error.message, 'error');
+            }
+        }
+        
+        // Editar produto
+        async function editarProduto() {
+            try {
+                const id = document.getElementById('editId').value;
+                const nome = document.getElementById('nome').value;
+                const descricao = document.getElementById('descricao').value;
+                const preco = document.getElementById('preco').value;
+                const categoria = document.getElementById('categoria').value;
+                
+                if (!id || !nome || !preco || !categoria) {
+                    showResult('editResult', 'ID, nome, preço e categoria são obrigatórios', 'error');
+                    return;
+                }
+                
+                const result = await apiCall('produtos', 'PUT', {
+                    id: parseInt(id), nome, descricao, preco: parseFloat(preco), categoria
+                });
+                
+                showResult('editResult', result.message, 'success');
+                setTimeout(listarProdutos, 1000);
+            } catch (error) {
+                showResult('editResult', error.message, 'error');
+            }
+        }
+        
+        // Remover produto
+        async function removerProduto() {
+            try {
+                const id = document.getElementById('editId').value;
+                if (!id) {
+                    showResult('editResult', 'Digite um ID válido', 'error');
+                    return;
+                }
+                
+                if (!confirm(`Tem certeza que deseja remover o produto ID ${id}?`)) {
+                    return;
+                }
+                
+                const result = await apiCall(`produtos?id=${id}`, 'DELETE');
+                showResult('editResult', result.message, 'success');
+                
+                // Limpar campos
+                document.getElementById('editId').value = '';
+                document.getElementById('nome').value = '';
+                document.getElementById('descricao').value = '';
+                document.getElementById('preco').value = '';
+                document.getElementById('categoria').value = '';
+                
+                setTimeout(listarProdutos, 1000);
+            } catch (error) {
+                showResult('editResult', error.message, 'error');
+            }
+        }
+        
+        // Função para mostrar resultados
+        function showResult(elementId, message, type) {
+            const element = document.getElementById(elementId);
+            element.innerHTML = `<div class="${type}">${message}</div>`;
+        }
+        
+        // Verificar status inicial
+        window.onload = function() {
+            checkAuth();
+        };
+    </script>
+</body>
+</html>

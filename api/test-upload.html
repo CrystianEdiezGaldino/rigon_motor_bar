@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Cardápio - Rigon Motorbar</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .logo h1 {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .logo .highlight {
+            color: #F45F0A;
+        }
+        
+        .logo p {
+            color: #ccc;
+            font-size: 1.1rem;
+        }
+        
+        .upload-form {
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #fff;
+        }
+        
+        .file-input-wrapper {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+        
+        .file-input {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+        
+        .file-input-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 15px 20px;
+            background: linear-gradient(135deg, #F45F0A, #d54d02);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            font-weight: 600;
+            width: 100%;
+        }
+        
+        .file-input-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(244, 95, 10, 0.4);
+        }
+        
+        .file-name {
+            margin-top: 10px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            color: #ccc;
+            display: none;
+        }
+        
+        .upload-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+        
+        .upload-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4);
+        }
+        
+        .upload-btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #F45F0A, #d54d02);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .status {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        .status.success {
+            background: rgba(40, 167, 69, 0.2);
+            border: 1px solid #28a745;
+            color: #28a745;
+        }
+        
+        .status.error {
+            background: rgba(220, 53, 69, 0.2);
+            border: 1px solid #dc3545;
+            color: #dc3545;
+        }
+        
+        .info {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #F45F0A;
+        }
+        
+        .info h3 {
+            margin-bottom: 15px;
+            color: #F45F0A;
+        }
+        
+        .info ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .info li {
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
+        
+        .info li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #28a745;
+            font-weight: bold;
+        }
+        
+        .back-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .back-link a {
+            color: #F45F0A;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .back-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <h1>RIGON<span class="highlight">MOTOR</span>BAR</h1>
+            <p>Upload de Cardápio</p>
+        </div>
+        
+        <form id="uploadForm" class="upload-form">
+            <div class="form-group">
+                <label for="cardapio_pdf">Selecione o novo cardápio (PDF):</label>
+                <div class="file-input-wrapper">
+                    <input type="file" id="cardapio_pdf" name="cardapio_pdf" class="file-input" accept=".pdf" required>
+                    <button type="button" class="file-input-button" onclick="document.getElementById('cardapio_pdf').click()">
+                        📄 Escolher Arquivo PDF
+                    </button>
+                </div>
+                <div id="fileName" class="file-name"></div>
+            </div>
+            
+            <button type="submit" class="upload-btn" id="uploadBtn">
+                📤 Enviar Cardápio
+            </button>
+            
+            <div class="progress-bar" id="progressBar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            
+            <div id="status" class="status"></div>
+        </form>
+        
+        <div class="info">
+            <h3>ℹ️ Informações Importantes:</h3>
+            <ul>
+                <li>O arquivo deve ser um PDF válido</li>
+                <li>Tamanho máximo: 10MB</li>
+                <li>O arquivo atual será substituído</li>
+                <li>Um backup será criado automaticamente</li>
+                <li>O nome do arquivo será mantido como "cardapio.pdf"</li>
+            </ul>
+        </div>
+        
+        <div class="back-link">
+            <a href="../index.html">← Voltar ao Site</a>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('uploadForm');
+        const fileInput = document.getElementById('cardapio_pdf');
+        const fileName = document.getElementById('fileName');
+        const uploadBtn = document.getElementById('uploadBtn');
+        const progressBar = document.getElementById('progressBar');
+        const progressFill = document.getElementById('progressFill');
+        const status = document.getElementById('status');
+
+        // Handle file selection
+        fileInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                fileName.textContent = `Arquivo selecionado: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)`;
+                fileName.style.display = 'block';
+                uploadBtn.disabled = false;
+            } else {
+                fileName.style.display = 'none';
+                uploadBtn.disabled = true;
+            }
+        });
+
+        // Handle form submission
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const file = fileInput.files[0];
+            if (!file) {
+                showStatus('Por favor, selecione um arquivo PDF.', 'error');
+                return;
+            }
+
+            // Validate file type
+            if (file.type !== 'application/pdf') {
+                showStatus('Por favor, selecione apenas arquivos PDF.', 'error');
+                return;
+            }
+
+            // Validate file size (10MB)
+            if (file.size > 10 * 1024 * 1024) {
+                showStatus('Arquivo muito grande. Máximo permitido: 10MB', 'error');
+                return;
+            }
+
+            // Prepare form data
+            const formData = new FormData();
+            formData.append('cardapio_pdf', file);
+
+            // Show progress
+            uploadBtn.disabled = true;
+            uploadBtn.textContent = '📤 Enviando...';
+            progressBar.style.display = 'block';
+            progressFill.style.width = '0%';
+
+            try {
+                // Simulate progress
+                let progress = 0;
+                const progressInterval = setInterval(() => {
+                    progress += Math.random() * 30;
+                    if (progress > 90) progress = 90;
+                    progressFill.style.width = progress + '%';
+                }, 200);
+
+                // Upload file
+                const response = await fetch('upload-cardapio.php', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                clearInterval(progressInterval);
+                progressFill.style.width = '100%';
+
+                const result = await response.json();
+
+                if (response.ok && result.success) {
+                    showStatus(`✅ ${result.message}`, 'success');
+                    if (result.backup_created) {
+                        showStatus(`📁 Backup criado: ${result.backup_file}`, 'success');
+                    }
+                    form.reset();
+                    fileName.style.display = 'none';
+                } else {
+                    showStatus(`❌ ${result.error || 'Erro desconhecido'}`, 'error');
+                }
+            } catch (error) {
+                showStatus(`❌ Erro de conexão: ${error.message}`, 'error');
+            } finally {
+                uploadBtn.disabled = false;
+                uploadBtn.textContent = '📤 Enviar Cardápio';
+                setTimeout(() => {
+                    progressBar.style.display = 'none';
+                    progressFill.style.width = '0%';
+                }, 2000);
+            }
+        });
+
+        function showStatus(message, type) {
+            status.textContent = message;
+            status.className = `status ${type}`;
+            status.style.display = 'block';
+            
+            // Auto-hide after 5 seconds
+            setTimeout(() => {
+                status.style.display = 'none';
+            }, 5000);
+        }
+    </script>
+</body>
+</html>

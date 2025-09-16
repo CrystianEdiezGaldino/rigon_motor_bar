@@ -36,7 +36,8 @@ if($method === 'GET') {
                     "descricao" => $descricao,
                     "preco" => $preco,
                     "categoria" => $categoria,
-                    "imagem" => $imagem
+                    "imagem" => $imagem,
+                    "ativo" => true // Sempre true para produtos públicos
                 );
                 array_push($produtos_arr, $produto_item);
             }
@@ -59,7 +60,8 @@ if($method === 'GET') {
                     "descricao" => $descricao,
                     "preco" => $preco,
                     "categoria" => $categoria,
-                    "imagem" => $imagem
+                    "imagem" => $imagem,
+                    "ativo" => true // Sempre true para produtos públicos
                 );
                 array_push($produtos_arr, $produto_item);
             }

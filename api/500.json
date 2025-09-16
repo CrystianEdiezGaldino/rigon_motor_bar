@@ -1,0 +1,8 @@
+{
+  "error": "Internal Server Error",
+  "message": "Erro interno do servidor",
+  "status": 500,
+  "timestamp": "2025-01-12T00:00:00Z",
+  "path": "/api",
+  "contact": "contato@rigonmotorbar.com.br"
+}
