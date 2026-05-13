@@ -17,7 +17,7 @@ error_log("Upload request - Method: " . $_SERVER['REQUEST_METHOD'] . " - Content
 // Handle GET requests - show upload page
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     header('Content-Type: text/html; charset=utf-8');
-    include 'upload-page.html';
+    include __DIR__ . '/upload-page.php';
     exit();
 }
 
